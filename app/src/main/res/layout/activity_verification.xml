@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="30dp"
+    android:gravity="center_horizontal">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Verify Your Account"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:layout_marginTop="80dp" />
+
+    <TextView
+        android:id="@+id/verificationMessageTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="We sent a 6-digit code to your email."
+        android:textSize="16sp"
+        android:layout_marginTop="20dp" />
+
+    <EditText
+        android:id="@+id/codeEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter 6-digit code"
+        android:inputType="number"
+        android:maxLength="6"
+        android:gravity="center"
+        android:textSize="24sp"
+        android:layout_marginTop="30dp" />
+
+    <Button
+        android:id="@+id/verifyButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Verify"
+        android:layout_marginTop="25dp" />
+
+    <Button
+        android:id="@+id/resendCodeButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Resend Code"
+        android:layout_marginTop="12dp" />
+
+</LinearLayout>

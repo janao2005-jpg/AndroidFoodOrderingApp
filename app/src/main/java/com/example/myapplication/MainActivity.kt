@@ -7,6 +7,7 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 
 class MainActivity : AppCompatActivity() {
 
@@ -16,29 +17,46 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        auth = FirebaseAuth.getInstance()
+        auth =
+            FirebaseAuth.getInstance()
 
         val emailEditText =
-            findViewById<EditText>(R.id.emailEditText)
+            findViewById<EditText>(
+                R.id.emailEditText
+            )
 
         val passwordEditText =
-            findViewById<EditText>(R.id.passwordEditText)
+            findViewById<EditText>(
+                R.id.passwordEditText
+            )
 
         val loginButton =
-            findViewById<Button>(R.id.loginButton)
+            findViewById<Button>(
+                R.id.loginButton
+            )
 
         val registerButton =
-            findViewById<Button>(R.id.registerButton)
+            findViewById<Button>(
+                R.id.registerButton
+            )
 
         loginButton.setOnClickListener {
 
             val email =
-                emailEditText.text.toString().trim()
+                emailEditText
+                    .text
+                    .toString()
+                    .trim()
 
             val password =
-                passwordEditText.text.toString()
+                passwordEditText
+                    .text
+                    .toString()
 
-            if (email.isEmpty() || password.isEmpty()) {
+            if (
+                email.isEmpty() ||
+                password.isEmpty()
+            ) {
 
                 Toast.makeText(
                     this,
@@ -56,38 +74,80 @@ class MainActivity : AppCompatActivity() {
 
                 if (task.isSuccessful) {
 
-                    val firebaseUser = auth.currentUser
+                    val firebaseUser =
+                        auth.currentUser
 
-                    if (
-                        firebaseUser != null &&
-                        firebaseUser.isEmailVerified
-                    ) {
+                    if (firebaseUser == null) {
 
                         Toast.makeText(
                             this,
-                            "Login successful",
+                            "Login failed",
                             Toast.LENGTH_SHORT
                         ).show()
 
-                        val intent =
-                            Intent(
-                                this,
-                                ProfileActivity::class.java
-                            )
-
-                        startActivity(intent)
-                        finish()
-
-                    } else {
-
-                        Toast.makeText(
-                            this,
-                            "Please verify your email before logging in.",
-                            Toast.LENGTH_LONG
-                        ).show()
-
-                        auth.signOut()
+                        return@addOnCompleteListener
                     }
+
+                    val uid =
+                        firebaseUser.uid
+
+                    FirebaseDatabase
+                        .getInstance()
+                        .getReference("users")
+                        .child(uid)
+                        .child("verified")
+                        .get()
+                        .addOnSuccessListener { snapshot ->
+
+                            val verified =
+                                snapshot
+                                    .getValue(Boolean::class.java)
+                                    ?: false
+
+                            if (verified) {
+
+                                Toast.makeText(
+                                    this,
+                                    "Login successful",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+
+                                val intent =
+                                    Intent(
+                                        this,
+                                        ProfileActivity::class.java
+                                    )
+
+                                startActivity(intent)
+                                finish()
+
+                            } else {
+
+                                Toast.makeText(
+                                    this,
+                                    "Please verify your account first.",
+                                    Toast.LENGTH_LONG
+                                ).show()
+
+                                val intent =
+                                    Intent(
+                                        this,
+                                        VerificationActivity::class.java
+                                    )
+
+                                intent.putExtra(
+                                    "email",
+                                    email
+                                )
+
+                                intent.putExtra(
+                                    "uid",
+                                    uid
+                                )
+
+                                startActivity(intent)
+                            }
+                        }
 
                 } else {
 

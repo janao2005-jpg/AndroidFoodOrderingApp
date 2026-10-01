@@ -13,5 +13,5 @@
 .externalNativeBuild
 .cxx
 local.properties
-/app/build/
+/app/build/jana
 google-services.json
